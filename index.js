@@ -6,7 +6,7 @@ function githubApiFetch(url, githubAccessToken) {
     const headers = {
         'Accept': 'application/vnd.github.v3+json',
         // https://docs.github.com/en/rest/overview/resources-in-the-rest-api#user-agent-required
-        'User-Agent': 'rcasto',
+        'User-Agent': 'project metrics',
     };
 
     if (githubAccessToken) {
