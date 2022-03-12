@@ -35,4 +35,5 @@ import { getOwnedReposForAuthenticatedUser, getPageViewsForRepo } from './index.
         .sort((repo1, repo2) => repo2.uniques - repo1.uniques)
 
     console.log(repoPageViewStats);
+    process.exit(0);
 }());
