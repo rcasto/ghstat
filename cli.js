@@ -1,25 +1,26 @@
 import { loginViaDevice, pollForDeviceAccessToken } from './deviceLogin.js';
 import { getOwnedReposForAuthenticatedUser, getPageViewsForRepo } from './index.js';
 
-// const [
-//     githubAccessToken,
-// ] = process.argv.slice(2);
-
-// if (!githubAccessToken) {
-//     console.log(`Usage: node cli.ts <github-access-token>`);
-//     process.exit(1);
-// }
-
 (async function () {
-    const deviceLoginInfo = await loginViaDevice();
+    const {
+        verification_uri,
+        user_code,
+        expires_in, // in seconds
+        device_code,
+        interval,
+    } = await loginViaDevice();
+    const expiresInMilliseconds = expires_in * 1000;
 
-    console.log(`To continue, please login at ${deviceLoginInfo.verification_uri}`);
-    console.log(`Please enter the code ${deviceLoginInfo.user_code}`);
-    console.log(`This code will expire at ${new Date(Date.now() + deviceLoginInfo.expires_in * 1000)}`);
+    console.log(`Using a browser on this device or another, visit:\n${verification_uri}\n`);
+    console.log(`And enter the code:\n${user_code}\n`);
+    setTimeout(() => {
+        console.log(`This code has expired as of ${new Date(Date.now() + expiresInMilliseconds).toLocaleString()}`);
+        process.exit(1);
+    }, expiresInMilliseconds);
 
     const {
         access_token,
-    } = await pollForDeviceAccessToken(deviceLoginInfo.device_code, deviceLoginInfo.interval);
+    } = await pollForDeviceAccessToken(device_code, interval);
 
     const ownedRepos = (await getOwnedReposForAuthenticatedUser(access_token) || [])
         .map(ownedRepo => ({
