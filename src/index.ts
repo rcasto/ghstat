@@ -76,7 +76,7 @@ export async function getOwnedReposForUser(username, githubAccessToken, page = 1
 export async function getPageViewsForRepo(owner, repo, githubAccessToken) {
     const repoPageViewApiUrl = `${githubApiBaseUrl}/repos/${owner}/${repo}/traffic/views`;
     return githubApiFetch(repoPageViewApiUrl, githubAccessToken)
-    .then(repoStats => ({
+    .then((repoStats: any) => ({
         name: repo,
         count: repoStats.count,
         uniques: repoStats.uniques,
