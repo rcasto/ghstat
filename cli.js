@@ -1,3 +1,4 @@
+import { buildChart } from './barchart.js';
 import { loginViaDevice, pollForDeviceAccessToken } from './deviceLogin.js';
 import { getOwnedReposForAuthenticatedUser, getPageViewsForRepo } from './index.js';
 
@@ -28,12 +29,18 @@ import { getOwnedReposForAuthenticatedUser, getPageViewsForRepo } from './index.
             owner: ownedRepo.owner.login,
         }));
 
-    console.log(`# of owned repos: ${ownedRepos.length}`);
+    console.log(`# of owned public repos: ${ownedRepos.length}`);
 
     const repoPageViewStats = (await Promise.all(ownedRepos
         .map(ownedRepo => getPageViewsForRepo(ownedRepo.owner, ownedRepo.name, access_token))))
-        .sort((repo1, repo2) => repo2.uniques - repo1.uniques)
+        .sort((repo1, repo2) => repo2.uniques - repo1.uniques);
 
-    console.log(repoPageViewStats);
+    const repoNames = repoPageViewStats.map(repoStats => repoStats.name);
+    const repoUniqueCounts = repoPageViewStats.map(repoStats => repoStats.uniques);
+    const repoUniqueCountBarChart = buildChart(repoNames, repoUniqueCounts, 50, '# of unique views per repo');
+
+    // console.log(repoPageViewStats);
+    console.log(repoUniqueCountBarChart);
+
     process.exit(0);
 }());
