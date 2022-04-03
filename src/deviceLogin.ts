@@ -11,7 +11,9 @@ const DEVICE_GRANT = 'urn:ietf:params:oauth:grant-type:device_code';
 const deviceLoginAuthorizationUrl = 'https://github.com/login/device/code';
 const deviceLoginTokenUrl = 'https://github.com/login/oauth/access_token';
 
-export function loginViaDevice() {
+export function loginViaDevice(onCodeCallback): Promise<{
+    access_token: String
+}> {
     const url = `${deviceLoginAuthorizationUrl}?client_id=${CLIENT_ID}&scope=${SCOPES_REQUIRED.join(',')}`;
     return fetch(url, {
             method: 'POST',
