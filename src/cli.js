@@ -48,6 +48,9 @@ const RestOctokit = Octokit.plugin(restEndpointMethods);
         per_page: 100,
     });
 
+    // octokit.rest.repos.getClones
+    // octokit.rest.repos.getTopReferrers
+
     const ownedRepoViewPromises = ownedRepos.map(async ownedRepo => {
         const { data } = await octokit.rest.repos.getViews({
             owner: login,
