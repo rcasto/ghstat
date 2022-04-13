@@ -10,14 +10,14 @@ const RestOctokit = Octokit.plugin(restEndpointMethods);
         personalAccessToken,
     ] = process.argv.slice(2);
 
-    const auth = personalAccessToken ?
+    const auth: any = personalAccessToken ?
         personalAccessToken : {
             clientType: 'oauth-app',
             clientId: 'd92b4c2578f683ff95fc',
             scopes: [
                 'public_repo',
             ],
-            onVerification: (verification) => {
+            onVerification: (verification: any) => {
                 console.log("Open %s", verification.verification_uri);
                 console.log("Enter code: %s", verification.user_code);
             },
@@ -63,8 +63,8 @@ const RestOctokit = Octokit.plugin(restEndpointMethods);
         };
     });
     const ownedRepoViews = await Promise.all(ownedRepoViewPromises);
-    const ownedRepoNames = [];
-    const ownedRepoUniqueCounts = [];
+    const ownedRepoNames: string[] = [];
+    const ownedRepoUniqueCounts: number[] = [];
 
     ownedRepoViews
         .sort((repo1, repo2) => repo2.uniques - repo1.uniques)
