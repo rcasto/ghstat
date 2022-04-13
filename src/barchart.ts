@@ -1,4 +1,4 @@
-export function buildChart(labels, values, maxTicks, title = '') {
+export function buildChart(labels: string[], values: number[], maxTicks: number, title: string = ''): string {
     if (!Array.isArray(labels)) {
         throw new Error(`The labels parameter provided is not an array: ${labels}`);
     }
@@ -64,7 +64,7 @@ export function buildChart(labels, values, maxTicks, title = '') {
     return chartString;
 }
 
-function getBarTickString(value, maxValue, maxTicks) {
+function getBarTickString(value: number, maxValue: number, maxTicks: number): string {
     const mappedValue = (value * maxTicks) / maxValue;
     const numWholeTicks = Math.floor(mappedValue);
 
