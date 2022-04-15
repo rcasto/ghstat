@@ -2,14 +2,15 @@
   "name": "ghstat",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/cli.js",
   "bin": {
     "ghstat": "dist/cli.js"
   },
   "scripts": {
     "start": "node dist/cli.js",
     "build": "tsc",
-    "build:dev": "chokidar 'src/*.ts' -c 'npm run build' --initial"
+    "build:dev": "chokidar 'src/*.ts' -c 'npm run build' --initial",
+    "prepack": "npm run build"
   },
   "keywords": [],
   "author": "Richie Casto (https://github.com/rcasto)",
