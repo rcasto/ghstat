@@ -53,11 +53,11 @@ function mapAndSortStat(stats: Record<string, IReturnedStats>, statName: 'rawVie
         values: uniqueCloneCounts,
     } = mapAndSortStat(stats, 'uniqueClones');
 
-    const repoRawViewCountBarChart = buildChart(rawViewLabels, rawViewCounts, 50, '# of raw views per repo');
-    const repoUniqueViewCountBarChart = buildChart(uniqueViewLabels, uniqueViewCounts, 50, '# of unique views per repo');
+    const repoRawViewCountBarChart = buildChart(rawViewLabels, rawViewCounts, 50, '# of raw views per repo in the last 14 days');
+    const repoUniqueViewCountBarChart = buildChart(uniqueViewLabels, uniqueViewCounts, 50, '# of unique views per repo in the last 14 days');
 
-    const repoRawCloneCountBarChart = buildChart(rawCloneLabels, rawCloneCounts, 50, '# of raw clones per repo');
-    const repoUniqueCloneCountBarChart = buildChart(uniqueCloneLabels, uniqueCloneCounts, 50, '# of unique clones per repo');
+    const repoRawCloneCountBarChart = buildChart(rawCloneLabels, rawCloneCounts, 50, '# of raw clones per repo in the last 14 days');
+    const repoUniqueCloneCountBarChart = buildChart(uniqueCloneLabels, uniqueCloneCounts, 50, '# of unique clones per repo in the last 14 days');
 
     console.log(`\n# of owned public repos for ${userInfo.username}: ${userInfo.numPublicRepos}\n`);
     console.log(repoRawViewCountBarChart);
