@@ -13,7 +13,8 @@ interface IOwnedRepo {
 }
 
 interface IRepoStat {
-    uniques: number;
+    rawCount: number;
+    uniqueCount: number;
 }
 
 interface IRepoStats {
@@ -21,7 +22,10 @@ interface IRepoStats {
 }
 
 interface IReturnedStats {
+    rawViews: number;
     uniqueViews: number;
+
+    rawClones: number;
     uniqueClones: number;
 }
 
@@ -45,9 +49,21 @@ export async function getOwnedRepoStats(personalAccessToken?: string): Promise<I
 
     Object.keys(userOwnedRepoViews)
         .forEach(userOwnedRepoName => {
+            const {
+                rawCount: rawViews,
+                uniqueCount: uniqueViews,
+            } = userOwnedRepoViews[userOwnedRepoName];
+            const {
+                rawCount: rawClones,
+                uniqueCount: uniqueClones,
+            } = userOwnedRepoClones[userOwnedRepoName];
+
             ownedRepoStats[userOwnedRepoName] = {
-                uniqueViews: userOwnedRepoViews[userOwnedRepoName].uniques,
-                uniqueClones: userOwnedRepoClones[userOwnedRepoName].uniques,
+                rawViews,
+                uniqueViews,
+
+                rawClones,
+                uniqueClones,
             };
         });
     
@@ -116,7 +132,8 @@ async function getOwnedRepoViews(octokit: (Octokit & Api), username: string, own
             per: 'week',
         });
         const viewStat: IRepoStat = {
-            uniques: data.uniques,
+            rawCount: data.count,
+            uniqueCount: data.uniques,
         };
 
         ownedRepoViewStats[ownedRepo.name] = viewStat;
@@ -139,7 +156,8 @@ async function getOwnedRepoClones(octokit: (Octokit & Api), username: string, ow
             per: 'week',
         });
         const cloneStat: IRepoStat = {
-            uniques: data.uniques,
+            rawCount: data.count,
+            uniqueCount: data.uniques,
         };
 
         ownedRepoCloneStats[ownedRepo.name] = cloneStat;
