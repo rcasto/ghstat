@@ -1,5 +1,12 @@
-- https://docs.github.com/en/rest/guides/getting-started-with-the-rest-api#using-personal-access-tokens
-- https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
-- Need at least repo scope: https://docs.github.com/en/rest/guides/getting-started-with-the-rest-api#repositories
+# ghstat
+A little cli tool to retrieve [metrics](https://docs.github.com/en/rest/reference/metrics) about your owned github repos.
 
-https://docs.github.com/en/rest/overview/resources-in-the-rest-api#user-agent-required
+## Usage
+Ensure you have [Node.js](https://nodejs.org) installed.
+
+```
+npx ghstat@latest
+```
+
+### Additional Flags
+TODO
