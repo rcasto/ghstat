@@ -21,7 +21,7 @@ interface IRepoStats {
     [key: string]: IRepoStat;
 }
 
-interface IReturnedStats {
+export interface IReturnedStats {
     rawViews: number;
     uniqueViews: number;
 

@@ -1,7 +1,29 @@
 #!/usr/bin/env node
 
 import { buildChart } from './barchart.js';
-import { getOwnedRepoStats } from './githubService.js';
+import { getOwnedRepoStats, IReturnedStats } from './githubService.js';
+
+function mapAndSortStat(stats: Record<string, IReturnedStats>, statName: 'rawViews' | 'rawClones' | 'uniqueViews' | 'uniqueClones') {
+    const ownedRepoNames = Object.keys(stats);
+    const labels: string[] = [];
+    const values: number[] = [];
+
+    ownedRepoNames
+        .map((ownedRepoName: string) => ({
+            name: ownedRepoName,
+            count: stats[ownedRepoName][statName],
+        }))
+        .sort((stat1, stat2) => stat2.count - stat1.count)
+        .forEach(repoStat => {
+            labels.push(repoStat.name);
+            values.push(repoStat.count);
+        });
+
+    return {
+        labels,
+        values,
+    };
+}
 
 (async function () {
     const [
@@ -12,27 +34,30 @@ import { getOwnedRepoStats } from './githubService.js';
         userInfo,
         stats,
     } = await getOwnedRepoStats(personalAccessToken);
-    const ownedRepoNames = Object.keys(stats);
 
-    const ownedRepoRawViewCounts = ownedRepoNames
-        .map(ownedRepoName => stats[ownedRepoName].rawViews)
-        .sort((count1, count2) => count2 - count1);
-    const ownedRepoUniqueViewCounts = ownedRepoNames
-        .map(ownedRepoName => stats[ownedRepoName].uniqueViews)
-        .sort((count1, count2) => count2 - count1);
+    const {
+        labels: rawViewLabels,
+        values: rawViewCounts,
+    } = mapAndSortStat(stats, 'rawViews');
+    const {
+        labels: uniqueViewLabels,
+        values: uniqueViewCounts,
+    } = mapAndSortStat(stats, 'uniqueViews');
 
-    const ownedRepoRawCloneCounts = ownedRepoNames
-        .map(ownedRepoName => stats[ownedRepoName].rawClones)
-        .sort((count1, count2) => count2 - count1);
-    const ownedRepoUniqueCloneCounts = ownedRepoNames
-        .map(ownedRepoName => stats[ownedRepoName].uniqueClones)
-        .sort((count1, count2) => count2 - count1);
+    const {
+        labels: rawCloneLabels,
+        values: rawCloneCounts,
+    } = mapAndSortStat(stats, 'rawClones');
+    const {
+        labels: uniqueCloneLabels,
+        values: uniqueCloneCounts,
+    } = mapAndSortStat(stats, 'uniqueClones');
 
-    const repoRawViewCountBarChart = buildChart(ownedRepoNames, ownedRepoRawViewCounts, 50, '# of raw views per repo');
-    const repoUniqueViewCountBarChart = buildChart(ownedRepoNames, ownedRepoUniqueViewCounts, 50, '# of unique views per repo');
+    const repoRawViewCountBarChart = buildChart(rawViewLabels, rawViewCounts, 50, '# of raw views per repo');
+    const repoUniqueViewCountBarChart = buildChart(uniqueViewLabels, uniqueViewCounts, 50, '# of unique views per repo');
 
-    const repoRawCloneCountBarChart = buildChart(ownedRepoNames, ownedRepoRawCloneCounts, 50, '# of raw clones per repo');
-    const repoUniqueCloneCountBarChart = buildChart(ownedRepoNames, ownedRepoUniqueCloneCounts, 50, '# of unique clones per repo');
+    const repoRawCloneCountBarChart = buildChart(rawCloneLabels, rawCloneCounts, 50, '# of raw clones per repo');
+    const repoUniqueCloneCountBarChart = buildChart(uniqueCloneLabels, uniqueCloneCounts, 50, '# of unique clones per repo');
 
     console.log(`\n# of owned public repos for ${userInfo.username}: ${userInfo.numPublicRepos}\n`);
     console.log(repoRawViewCountBarChart);
