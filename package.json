@@ -1,11 +1,13 @@
 {
-  "name": "github-project-metrics",
-  "type": "module",
+  "name": "ghstat",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "bin": {
+    "ghstat": "dist/cli.js"
+  },
   "scripts": {
-    "start": "node src/cli.js",
+    "start": "node dist/cli.js",
     "build": "tsc"
   },
   "keywords": [],
@@ -14,11 +16,11 @@
   "dependencies": {
     "@octokit/auth-oauth-device": "3.1.2",
     "@octokit/core": "3.6.0",
-    "@octokit/plugin-rest-endpoint-methods": "^5.13.0",
+    "@octokit/plugin-rest-endpoint-methods": "5.13.0",
     "node-fetch": "3.2.1"
   },
   "devDependencies": {
-    "@types/node": "^17.0.21",
-    "typescript": "^4.6.2"
+    "@types/node": "17.0.21",
+    "typescript": "4.6.2"
   }
 }
