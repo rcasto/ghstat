@@ -1,84 +1,29 @@
 import { buildChart } from './barchart.js';
-import { createOAuthDeviceAuth } from '@octokit/auth-oauth-device';
-import { Octokit } from '@octokit/core';
-import { restEndpointMethods } from '@octokit/plugin-rest-endpoint-methods';
-
-const RestOctokit = Octokit.plugin(restEndpointMethods);
+import { getOwnedRepoStats } from './githubService.js';
 
 (async function () {
     const [
         personalAccessToken,
     ] = process.argv.slice(2);
 
-    const auth: any = personalAccessToken ?
-        personalAccessToken : {
-            clientType: 'oauth-app',
-            clientId: 'd92b4c2578f683ff95fc',
-            scopes: [
-                'public_repo',
-            ],
-            onVerification: (verification: any) => {
-                console.log("Open %s", verification.verification_uri);
-                console.log("Enter code: %s", verification.user_code);
-            },
-        };
-    const authStrategy = personalAccessToken ?
-        undefined : createOAuthDeviceAuth;
-
-    const octokit = new RestOctokit({
-        auth,
-        authStrategy,
-    });
-
     const {
-        data: {
-            login,
-            public_repos,
-        }
-    } = await octokit.rest.users.getAuthenticated();
+        userInfo,
+        stats,
+    } = await getOwnedRepoStats(personalAccessToken);
+    const ownedRepoNames = Object.keys(stats);
+    const ownedRepoUniqueViewCounts = ownedRepoNames
+        .map(ownedRepoName => stats[ownedRepoName].uniqueViews)
+        .sort((count1, count2) => count2 - count1);
+    const ownedRepoUniqueCloneCounts = ownedRepoNames
+        .map(ownedRepoName => stats[ownedRepoName].uniqueClones)
+        .sort((count1, count2) => count2 - count1);
 
-    console.log(login, public_repos);
+    const repoUniqueViewCountBarChart = buildChart(ownedRepoNames, ownedRepoUniqueViewCounts, 50, '# of unique views per repo');
+    const repoUniqueCloneCountBarChart = buildChart(ownedRepoNames, ownedRepoUniqueCloneCounts, 50, '# of unique clones per repo');
 
-    const {
-        data: ownedRepos,
-    } = await octokit.rest.repos.listForUser({
-        username: login,
-        type: 'owner',
-        page: 1,
-        per_page: 100,
-    });
-
-    // octokit.rest.repos.getClones
-    // octokit.rest.repos.getTopReferrers
-
-    const ownedRepoViewPromises = ownedRepos.map(async ownedRepo => {
-        const { data } = await octokit.rest.repos.getViews({
-            owner: login,
-            repo: ownedRepo.name,
-            per: 'week',
-        });
-        return {
-            name: ownedRepo.name,
-            uniques: data.uniques,
-        };
-    });
-    const ownedRepoViews = await Promise.all(ownedRepoViewPromises);
-    const ownedRepoNames: string[] = [];
-    const ownedRepoUniqueCounts: number[] = [];
-
-    ownedRepoViews
-        .sort((repo1, repo2) => repo2.uniques - repo1.uniques)
-        .forEach(ownedRepoView => {
-            const { name, uniques } = ownedRepoView;
-            ownedRepoNames.push(name);
-            ownedRepoUniqueCounts.push(uniques);
-        });
-
-    console.log(`# of owned public repos: ${public_repos}`);
-
-    const repoUniqueCountBarChart = buildChart(ownedRepoNames, ownedRepoUniqueCounts, 50, '# of unique views per repo');
-    
-    console.log(repoUniqueCountBarChart);
+    console.log(`\n# of owned public repos for ${userInfo.username}: ${userInfo.numPublicRepos}\n`);
+    console.log(repoUniqueViewCountBarChart);
+    console.log(repoUniqueCloneCountBarChart);
 
     process.exit(0);
 }());

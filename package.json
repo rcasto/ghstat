@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "node dist/cli.js",
-    "build": "tsc"
+    "build": "tsc",
+    "build:dev": "chokidar 'src/*.ts' -c 'npm run build' --initial"
   },
   "keywords": [],
   "author": "Richie Casto (https://github.com/rcasto)",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@types/node": "17.0.21",
+    "chokidar-cli": "3.0.0",
     "typescript": "4.6.2"
   }
 }
