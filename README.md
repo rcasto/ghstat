@@ -26,3 +26,5 @@ If you do not pass in a personal access token, then the [device flow](https://do
 
 ## Additional Notes
 Will likely try to consolidate the stats to one printed out table later, all grouped to their respective repo, but for now every stat is printed out as a separate table sorted by count in descending order for owned repos.
+
+It is possible that you may get [rate limited](https://docs.github.com/en/enterprise-cloud@latest/rest/overview/resources-in-the-rest-api#rate-limiting), currently 5,000 requests per hour per authenticated user are allowed.
