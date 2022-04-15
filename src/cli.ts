@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { buildChart } from './barchart.js';
 import { getOwnedRepoStats } from './githubService.js';
 
